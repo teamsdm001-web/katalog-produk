@@ -1,0 +1,6 @@
+{
+  "name": "DermaCatalog Pro",
+  "description": "Professional skincare & medical treatment catalog with offline-friendly search, detailed prescription instructions, and direct WhatsApp ordering.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
