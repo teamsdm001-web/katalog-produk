@@ -234,21 +234,45 @@ export function generateSingleHtml(products: Product[], distributors: Record<str
           </div>
 
           <!-- Cara Kerja -->
-          <div>
-            <h4 class="text-xs font-bold text-teal-700 dark:text-teal-400 uppercase tracking-wider mb-1">Instruksi & Cara Pakai</h4>
-            <p id="modalProductUsage" class="text-sm text-teal-850 dark:text-teal-100/90 leading-relaxed">Cara pakai</p>
+          <div class="space-y-1.5 bg-teal-50/5 dark:bg-teal-950/10 border border-teal-100/20 dark:border-teal-900/15 p-3 rounded-xl">
+            <h4 class="text-xs font-bold text-teal-700 dark:text-teal-400 uppercase tracking-wider border-b border-teal-100/30 dark:border-teal-900/20 pb-1 mb-1.5 flex items-center gap-1.5">
+              <span class="w-1.5 h-3 bg-teal-500 rounded-full"></span> Instruksi &amp; Cara Pakai
+            </h4>
+            <div id="modalProductUsage" class="space-y-1"></div>
           </div>
 
           <!-- Indikasi -->
-          <div>
-            <h4 class="text-xs font-bold text-teal-700 dark:text-teal-400 uppercase tracking-wider mb-1">Deskripsi & Indikasi Medis</h4>
-            <p id="modalProductIndication" class="text-sm text-teal-850 dark:text-teal-100/90 leading-relaxed">Indikasi</p>
+          <div class="space-y-1.5 bg-teal-50/5 dark:bg-teal-950/10 border border-teal-100/20 dark:border-teal-900/15 p-3 rounded-xl">
+            <h4 class="text-xs font-bold text-teal-700 dark:text-teal-400 uppercase tracking-wider border-b border-teal-100/30 dark:border-teal-900/20 pb-1 mb-1.5 flex items-center gap-1.5">
+              <span class="w-1.5 h-3 bg-teal-500 rounded-full"></span> Deskripsi &amp; Indikasi Medis
+            </h4>
+            <div id="modalProductIndication" class="space-y-1"></div>
           </div>
 
           <!-- Kasus Kulit -->
-          <div id="modalSkinCaseContainer" class="hidden">
-            <h4 class="text-xs font-bold text-teal-700 dark:text-teal-400 uppercase tracking-wider mb-1.5">Indikasi Kasus Kulit</h4>
-            <div id="modalProductSkinCases" class="flex flex-wrap gap-1.5"></div>
+          <div id="modalSkinCaseContainer" class="hidden space-y-2 bg-teal-50/5 dark:bg-teal-950/10 border border-teal-100/20 dark:border-teal-900/15 p-3 rounded-xl">
+            <h4 class="text-xs font-bold text-teal-700 dark:text-teal-400 uppercase tracking-wider border-b border-teal-100/30 dark:border-teal-900/20 pb-1 mb-1.5 flex items-center gap-1.5">
+              <span class="w-1.5 h-3 bg-teal-500 rounded-full"></span> Indikasi Kasus Kulit
+            </h4>
+            <div id="modalProductSkinCases" class="flex flex-wrap gap-1.5 pt-1"></div>
+          </div>
+
+          <!-- Sampel Kasus Kulit (Clinical detailing image) -->
+          <div id="modalClinicalImageContainer" class="hidden space-y-3 border border-teal-100/40 dark:border-teal-900/30 rounded-xl p-3 bg-teal-50/10 dark:bg-teal-950/20">
+            <h4 class="text-xs font-extrabold text-teal-800 dark:text-teal-300 uppercase tracking-wider flex items-center gap-1.5">
+              <i data-lucide="stethoscope" class="w-4 h-4 text-teal-600 dark:text-teal-400"></i>
+              <span>Sampel Kasus Kulit (Visual Detailing)</span>
+            </h4>
+            <div class="flex flex-col sm:flex-row gap-3.5 items-center">
+              <div class="w-full sm:w-28 h-28 shrink-0 rounded-xl overflow-hidden bg-teal-50 dark:bg-teal-950/40 border border-teal-100/50 dark:border-teal-900/40 shadow-inner relative">
+                <img id="modalClinicalImage" src="" alt="Sampel Kasus" class="w-full h-full object-cover">
+              </div>
+              <div class="space-y-1.5 flex-1">
+                <p class="text-[0.62rem] font-bold text-teal-600/80 dark:text-teal-400/80 uppercase tracking-wider">Sasaran Indikasi Klinis:</p>
+                <p id="modalClinicalTarget" class="text-xs font-black text-teal-900 dark:text-teal-100">Masalah Kulit</p>
+                <p class="text-[0.68rem] text-teal-700/90 dark:text-teal-300/95 leading-relaxed font-semibold">Sediaan obat ini diformulasikan khusus untuk sasaran klinis di atas. Gambar menunjukkan sampel kondisi kulit yang merespon secara aktif terhadap komposisi bahan aktif utama.</p>
+              </div>
+            </div>
           </div>
         </div>
       </div>
@@ -574,6 +598,59 @@ export function generateSingleHtml(products: Product[], distributors: Record<str
     }
 
     // Modal Details Logic
+    function renderFormattedParagraphs(text) {
+      if (!text) return "";
+      return text.split("\n").map(para => {
+        const trimmed = para.trim();
+        if (!trimmed) return "";
+        
+        // Ordered lists (e.g. 1. Cuci...)
+        if (/^\d+\.\s/.test(trimmed)) {
+          const num = trimmed.match(/^(\d+)\.\s/)?.[1] || "";
+          const rest = trimmed.replace(/^\d+\.\s/, "");
+          return \`
+            <div class="flex gap-2.5 items-start mt-1.5 pl-1">
+              <span class="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-teal-100 dark:bg-teal-900/50 text-[0.62rem] font-black text-teal-800 dark:text-teal-300">
+                \${num}
+              </span>
+              <p class="text-xs text-teal-900/80 dark:text-teal-100/80 font-bold leading-relaxed">
+                \${rest}
+              </p>
+            </div>
+          \`;
+        }
+        
+        // Bullet lists
+        if (trimmed.startsWith("-") || trimmed.startsWith("*")) {
+          const rest = trimmed.replace(/^[-*]\s*/, "");
+          return \`
+            <div class="flex gap-2 items-start mt-1 pl-2">
+              <span class="h-1.5 w-1.5 rounded-full bg-teal-500 shrink-0 mt-2"></span>
+              <p class="text-xs text-teal-900/80 dark:text-teal-100/80 font-bold leading-relaxed">
+                \${rest}
+              </p>
+            </div>
+          \`;
+        }
+        
+        // Header labels (e.g. [Petunjuk Langkah-Demi-Langkah])
+        if (trimmed.startsWith("[") && trimmed.endsWith("]")) {
+          return \`
+            <h5 class="text-[0.65rem] font-black text-teal-700 dark:text-teal-400 uppercase tracking-wider mt-3 mb-1 border-b border-teal-100/15 dark:border-teal-900/15 pb-0.5">
+              \${trimmed.substring(1, trimmed.length - 1)}
+            </h5>
+          \`;
+        }
+        
+        // Plain paragraphs
+        return \`
+          <p class="text-xs text-teal-850 dark:text-teal-150 leading-relaxed font-semibold mt-1">
+            \${trimmed}
+          </p>
+        \`;
+      }).join("");
+    }
+
     function openProductModal(id) {
       const p = products.find(x => x.id === id);
       if (!p) return;
@@ -598,8 +675,9 @@ export function generateSingleHtml(products: Product[], distributors: Record<str
       document.getElementById("modalProductPrice").textContent = formatRp(p.harga);
       document.getElementById("modalProductPackagingText").textContent = p.kemasan;
       document.getElementById("modalProductComposition").textContent = p.komposisi;
-      document.getElementById("modalProductUsage").textContent = p.caraKerja;
-      document.getElementById("modalProductIndication").textContent = p.indikasi;
+      
+      document.getElementById("modalProductUsage").innerHTML = renderFormattedParagraphs(p.caraKerja);
+      document.getElementById("modalProductIndication").innerHTML = renderFormattedParagraphs(p.indikasi);
       
       const caseContainer = document.getElementById("modalSkinCaseContainer");
       const casesGrid = document.getElementById("modalProductSkinCases");
@@ -613,6 +691,16 @@ export function generateSingleHtml(products: Product[], distributors: Record<str
       } else {
         casesGrid.innerHTML = "";
         caseContainer.classList.add("hidden");
+      }
+
+      // Handle Clinical Detailing Image (gambarKasus)
+      const clinicalContainer = document.getElementById("modalClinicalImageContainer");
+      if (p.gambarKasus) {
+        document.getElementById("modalClinicalImage").src = p.gambarKasus;
+        document.getElementById("modalClinicalTarget").textContent = p.kasusKulit ? p.kasusKulit.split(",")[0].trim() : "Masalah Kulit";
+        clinicalContainer.classList.remove("hidden");
+      } else {
+        clinicalContainer.classList.add("hidden");
       }
       
       document.getElementById("productModal").classList.remove("hidden");
